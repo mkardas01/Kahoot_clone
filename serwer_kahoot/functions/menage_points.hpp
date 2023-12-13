@@ -1,0 +1,1 @@
+void putPointsToUser(Games *games, json gameData, User user, UserList *userList)

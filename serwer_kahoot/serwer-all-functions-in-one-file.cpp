@@ -902,9 +902,6 @@ int main()
 
             printGames(games, &userList);
             
-            sleep(2);
-
-
         }catch(...){
             cerr << "Niezidentyfikowany wyjatek" << std::endl;
         }

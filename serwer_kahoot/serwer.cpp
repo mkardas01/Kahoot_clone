@@ -6,7 +6,6 @@
 #include <errno.h>
 #include <netdb.h>
 #include <poll.h>
-#include <thread>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,9 +100,6 @@ int main()
 
             printGames(games, &userList);
             
-            sleep(2);
-
-
         }catch(...){
             cerr << "Niezidentyfikowany wyjatek" << std::endl;
         }

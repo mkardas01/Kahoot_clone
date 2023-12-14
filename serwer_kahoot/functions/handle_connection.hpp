@@ -1,11 +1,12 @@
-void handleAccept(UserList* userList, User user)
+
+void handleAccept(UserList* userList, User user) // Handle accepting new connection 
 {
     // Find the first available userID
     int firstAvailableUserID = 0;
 
     for (const auto& existingUser : userList->users)
     {
-        if (existingUser.userID != -1)
+        if (existingUser.userID != -1) // userID = -1 means user is disconnected
         {
             firstAvailableUserID++;
         }
@@ -14,6 +15,8 @@ void handleAccept(UserList* userList, User user)
             break;
         }
     }
+
+    //Create pollfd 
 
     user.userID = firstAvailableUserID;
 
@@ -36,14 +39,12 @@ void handleAccept(UserList* userList, User user)
     if (static_cast<int>(userList->users.size()) <= firstAvailableUserID)
         userList->users.resize(userList->users.size() + 1); // Resize users vector if needed
 
-    userList->users[user.userID] = user;
-
-    // No need to increment userID here since it's already set
+    userList->users[user.userID] = user; // Add user to userList
 
     printf("Assigned userID: %d\n", user.userID);
 }
 
-void acceptClient(UserList *userList, pollfd server_events)
+void acceptClient(UserList *userList, pollfd server_events) // Accept new connection
 {
     struct sockaddr_in client_addr;
     socklen_t addr_size;
@@ -51,10 +52,10 @@ void acceptClient(UserList *userList, pollfd server_events)
 
     int server_poll = poll(&server_events, 1, 0);
 
-    if (server_poll > 0 && (server_events.revents & POLLIN))
+    if (server_poll > 0 && (server_events.revents & POLLIN)) // If new event at server descriptor 
     {
         addr_size = sizeof(client_addr);
-        user.client_socket = accept(server_events.fd, (struct sockaddr *)&client_addr, &addr_size);
+        user.client_socket = accept(server_events.fd, (struct sockaddr *)&client_addr, &addr_size); // Accept connection
 
         if (user.client_socket == -1)
         {
@@ -64,56 +65,57 @@ void acceptClient(UserList *userList, pollfd server_events)
         }
 
         printf("Connection accepted from %s:%d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-        handleAccept(userList, user);
+        handleAccept(userList, user); // Handle accept
     }
 }
 
-void disconnectClient(Games *games, UserList *userList, User user, int i)
+void disconnectClient(Games *games, UserList *userList, User user, int i) // Disconnect user
 {
     // Zamknięcie połączenia przez klienta
     cout << "Connection closed by client " << userList->users[i].userID << endl;
-    close(userList->users[i].client_socket);
+
+    close(userList->users[i].client_socket); // Close any exitisng descriptor 
     close(userList->eventListener[i].fd);
     close(userList->sendListener[i].fd);
     close(user.client_socket);
 
     bool found = false;
 
-    for (int p = 0; p < static_cast<int>(games->gamesList.size()); p++)
+    for (int p = 0; p < static_cast<int>(games->gamesList.size()); p++) // Find disconnected user in game
     {
         GameDetails game = games->gamesList[p];
         cout << "sprawdzam gre o id " << p << endl;
 
-        for (int u = 0; u < static_cast<int>(game.users.size()); u++)
+        for (int u = 0; u < static_cast<int>(game.users.size()); u++) // Find user in game 
         {
             cout << "sprawdzam uzytkownika o id " << u << endl;
 
-            if (game.users[u].userID == user.userID)
+            if (game.users[u].userID == user.userID) // Set his userid to -1 (id -1 means disconnected)
             {
                 games->gamesList[p].users[u].userID = -1;
 
-                if (game.users[u].userID == game.gameOwnerID)
+                if (game.users[u].userID == game.gameOwnerID) // Check if user was a gameowner if yes set gameownerid to -1
                     games->gamesList[p].gameOwnerID = -1;
 
                 found = true;
-                break; // Przerwij wewnętrzną pętlę
+                break; 
             }
         }
 
         if (found)
         {
-            break; // Przerwij zewnętrzną pętlę
+            break;
         }
     }
 
-    if (userList->users[i].userID == userList->users[userList->users.size() - 1].userID)
+    if (userList->users[i].userID == userList->users[userList->users.size() - 1].userID) // If user in userlist was at the end of userlist vector, delete it
     {
         userList->buffer.erase(userList->buffer.begin() + i);
         userList->eventListener.erase(userList->eventListener.begin() + i);
         userList->sendListener.erase(userList->sendListener.begin() + i);
         userList->users.erase(userList->users.begin() + i);
     }
-    else
+    else // Otherwise put empoty user with id -1
     {
 
         User emptyUser;

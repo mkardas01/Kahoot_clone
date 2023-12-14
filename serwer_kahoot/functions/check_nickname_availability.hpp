@@ -1,9 +1,9 @@
-string nickNameStatus(Games *games, int gameID, string &gameNickname)
+string nickNameStatus(Games *games, int gameID, string &gameNickname) // Check nickname status
 {
     // Check if the gameID is valid
     if (gameID < 0 || gameID >= static_cast<int>(games->gamesList.size()))
     {
-        // Handle invalid gameID, e.g., throw an exception or return an error code
+        // Handle invalid gameID
         return "error"; // error
     }
 
@@ -14,9 +14,9 @@ string nickNameStatus(Games *games, int gameID, string &gameNickname)
         {
 
             if (user.userID != -1)
-                return "unavailable"; // cant rejoin user is connected to this nickname
+                return "unavailable"; // Cant rejoin user is connected to this nickname
             else
-                return "rejoin"; // can rejoin user is not connectd to this nickname
+                return "rejoin"; // Can rejoin, user is not connectd to this nickname
         }
     }
 

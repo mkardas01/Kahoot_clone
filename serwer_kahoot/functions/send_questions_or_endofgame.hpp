@@ -1,4 +1,4 @@
-void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList *userList)
+void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList *userList) // Handle questions and end of game
 {
 
     json jsonMessage;
@@ -6,29 +6,26 @@ void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList
 
     cout << "Found game with matching ID. questions" << endl;
 
-    for (const User &gameUser : game.users) // send current question to all users except owner
+    for (const User &gameUser : game.users) // Send current question or end of game to all users 
     {
-        if (!endOfGame)
+        if (!endOfGame) // If game is still on
         {
-            jsonMessage = questionsToJson(&game);
+            jsonMessage = questionsToJson(&game); // Get question
 
-            if (gameUser.userID == game.gameOwnerID)
+            if (gameUser.userID == game.gameOwnerID) // For owner change type of message
             {
                 jsonMessage["type"] = "questionOwner";
             }
 
-            sendComunicate(gameUser, jsonMessage, userList);
+            sendComunicate(gameUser, jsonMessage, userList); // Send it 
         }
-        else
+        else // If game is not still on
         {
-            jsonMessage["type"] = "endOfGame";
-            sendComunicate(gameUser, jsonMessage, userList);
+            jsonMessage["type"] = "endOfGame"; 
+            sendComunicate(gameUser, jsonMessage, userList); // Send comunicate about ending of game
         }
     }
 
-    games->gamesList[gameID].startTime = std::chrono::time_point_cast<std::chrono::steady_clock::duration>(std::chrono::steady_clock::now());
+    games->gamesList[gameID].startTime = std::chrono::time_point_cast<std::chrono::steady_clock::duration>(std::chrono::steady_clock::now()); // Start timer of current question
 
-
-    return;
-    cout << "Game owner not found in users list for the game." << endl;
 }

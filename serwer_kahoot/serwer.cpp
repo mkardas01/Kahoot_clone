@@ -42,20 +42,22 @@ using json = nlohmann::json;
 #include "functions/handle_data.hpp"
 #include "functions/check_if_next_question.hpp"
 
+
 int main()
 {
     Games games;
     UserList userList;
     pollfd server_events;
 
-    games.generateDummyData(2);
+    games.generateDummyData(2); // Put sample game with id 0 and 1, gamepin is 123
 
     int server_socket;
     struct sockaddr_in server_addr;
 
     // Create socket
-    server_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_socket == -1)
+    server_socket = socket(AF_INET, SOCK_STREAM, 0); // Create server socket
+
+    if (server_socket == -1) // Handle errors
     {
         perror("Error creating socket");
         exit(EXIT_FAILURE);
@@ -74,6 +76,7 @@ int main()
         exit(EXIT_FAILURE);
     }
 
+    // Set socket to non blocking 
     fcntl(server_socket, F_SETFL, O_NONBLOCK);
 
     // Listen for incoming connections
@@ -86,10 +89,11 @@ int main()
 
     printf("Server listening on port %d\n", PORT);
 
+    // Create server event listener
     server_events.fd = server_socket;
     server_events.events = POLLIN;
 
-    while (1)
+    while (1) // Handle acctions
     {
         try{
             acceptClient(&userList, server_events);

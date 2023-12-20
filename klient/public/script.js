@@ -329,6 +329,7 @@ function goToRankFunction() {
     this.tab = 1;
     this.showSpinner = false;
     this.questionTab = 4;
+    playersRankElement.innerHTML = "";
     isEndOfGame = true;
 }
 

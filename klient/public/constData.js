@@ -1,14 +1,4 @@
 let socket = new WebSocket('ws://localhost:3000/events');
-
-socket.addEventListener('close', (event) => {
-    console.log('Rozłączono z serwerem WebSocket');
-    
-    setTimeout(() => {
-      connectWebSocket();
-    }, 5000);
-  });
-
-
 let timeToRespond = 20;
 let respondTimeOut = null;
 

@@ -77,9 +77,9 @@ function sendStatus(message, success) { //show notifcation
 function sendMessage(message, waitForRespond = true) {
     // Wysyłaj wiadomość do serwera Node.js przez SSE
     message = message + '\n'
-    
+
     socket.send(message);
-    
+
     if (waitForRespond) {
         respondTimeOut = setTimeout(() => {
             sendStatus('Coś poszło nie tak - brak odpowiedzi od serwera', false);
@@ -329,7 +329,6 @@ function goToRankFunction() {
     this.tab = 1;
     this.showSpinner = false;
     this.questionTab = 4;
-    playersRankElement.innerHTML = "";
     isEndOfGame = true;
 }
 
@@ -339,9 +338,10 @@ function backButtonFunction() {
 
     if (isEndOfGame) {
         this.questionNumber = 1,
-            this.showSpinner = false,
-            this.questionTab = 0,
-            this.startGameTab = 0
+        this.showSpinner = false,
+        this.questionTab = 0,
+        this.startGameTab = 0
+        playersRankElement.innerHTML = "";
         isEndOfGame = false;
     }
 }

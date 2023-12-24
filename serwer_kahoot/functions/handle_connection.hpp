@@ -67,6 +67,13 @@ void acceptClient(UserList *userList, int server_socket) // Accept new connectio
         }
     }
 
+    if (fcntl(user.client_socket, F_SETFL, O_NONBLOCK) == -1)
+    {
+        perror("Error setting nonblocking mode in new connection");
+        close(server_socket);
+        exit(EXIT_FAILURE);
+    }
+
     printf("Connection accepted from %s:%d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
     handleAccept(userList, user); // Handle accept
 }

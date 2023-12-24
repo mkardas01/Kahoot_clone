@@ -99,7 +99,7 @@ int main()
 
             checkIfSendNextQuestion(&games, &userList);
 
-            printGames(games, &userList);
+            //printGames(games, &userList);
             
         }catch(...){
             cerr << "Niezidentyfikowany wyjatek" << std::endl;

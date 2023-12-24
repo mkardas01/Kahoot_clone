@@ -34,12 +34,12 @@ struct GameDetails
     int questionsNumber;
     int gameOwnerID;
     std::chrono::steady_clock::time_point startTime;
-    GameStatus gameStatus;          // notWaitingForPlayers, waitingForPlayers, started
+    string gameStatus;          // notWaitingForPlayers, waitingForPlayers, started
     vector<Question> questions; // game questions
     vector<User> users;         // game users
 
     GameDetails()
-        : currentQuestion(0), questionsNumber(0), gameOwnerID(-2), gameStatus(notWaitingForPlayers){
+        : currentQuestion(0), questionsNumber(0), gameOwnerID(-2), gameStatus("notWaitingForPlayers"){
 
                                                                                       };
 };

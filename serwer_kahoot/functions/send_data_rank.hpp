@@ -52,4 +52,7 @@ void sendPointsSummary(Games *games, UserList *userList, int gameID) // Send poi
     {
         sendComunicate(gameUser, jsonMessage, userList);
     }
+
+    // Send it to game owner
+    sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList);
 }

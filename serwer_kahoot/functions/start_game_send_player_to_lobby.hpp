@@ -38,7 +38,7 @@ void startGame(Games *games, json gameData, User user, UserList *userList) // st
 
     jsonMessage["status"] = "started";
 
-    games->gamesList[gameID].gameStatus = started; // Change game status
+    games->gamesList[gameID].gameStatus = "started"; // Change game status
 
     sendComunicate(user, jsonMessage, userList); // Send respond to owner
     sendQuestionsOrEndOfGame(games, gameID, false, userList); // Send questions to players

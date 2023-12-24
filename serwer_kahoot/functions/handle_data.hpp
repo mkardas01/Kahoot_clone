@@ -27,9 +27,6 @@ void readData(Games *games, UserList *userList) // Read data
     char buf[256];
     ssize_t bytesRead;
 
-    int poll_users = poll(userList->eventListener.data(), userList->eventListener.size(), 0);
-
-    cout<<"poll_users "<<poll_users<<endl;
 
     for (int i = 0; i < static_cast<int>(userList->eventListener.size()); i++) // Iterate through all users
     {
@@ -37,6 +34,7 @@ void readData(Games *games, UserList *userList) // Read data
         string message;
         size_t newlinePos;
         
+        int poll_users = poll(&userList->eventListener[i], 1, 0);
 
         if (userList->buffer.size() < userList->eventListener.size())
             userList->buffer.resize(userList->eventListener.size()); // Resize buffor vector if we have more users 
@@ -45,7 +43,7 @@ void readData(Games *games, UserList *userList) // Read data
         {
             try
             {
-                while ((bytesRead = read(userList->eventListener[i].fd, buf, sizeof(buf) - 1))) // Read data 
+                while (poll_users > 0 && (userList->eventListener[i].revents & POLLIN) && (bytesRead = read(userList->eventListener[i].fd, buf, sizeof(buf) - 1)) > 0) // Read data
                 {
                     buf[bytesRead] = '\0'; // Ensure null-termination
 
@@ -60,6 +58,8 @@ void readData(Games *games, UserList *userList) // Read data
                     {
                         break;
                     }
+                    
+                    poll_users = poll(&userList->eventListener[i], 1, 0);
                 }
             }
             catch (...)
@@ -67,7 +67,7 @@ void readData(Games *games, UserList *userList) // Read data
                 cerr << "Niezidentyfikowany wyjatek podczas odczytu" << std::endl;
             }
 
-            if (bytesRead > 0) // If user didn't disconnect
+            if (bytesRead > 0 && userList->buffer[i].find("\n") != std::string::npos) // If user didn't disconnect and \n in buffor
             {
                 try
                 {
@@ -99,7 +99,7 @@ void readData(Games *games, UserList *userList) // Read data
                     cerr << "Niezidentyfikowany wyjatek bytes read" << std::endl;
                 }
             }
-            else // If user disconnect
+            else if(bytesRead <= 0) // If user disconnect
             {
                 disconnectClient(games, userList, user, i); // Handle disconnect
             }

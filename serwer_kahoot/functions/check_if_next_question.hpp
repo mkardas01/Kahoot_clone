@@ -8,11 +8,8 @@ void checkIfSendNextQuestion(Games *games, UserList *userList) // Check if it's 
         {
 
             auto currentTime = std::chrono::steady_clock::now();
-            auto timeSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(currentTime - game.startTime); // Calculate time
 
-            auto currentGameTime = timeSinceEpoch.count();
-
-            if (currentGameTime >= TIME_TO_RESPOND + 10) // If it's time for new question
+            if ( (currentTime - game.startTime) >= std::chrono::seconds(TIME_TO_RESPOND+10))
             {
 
                 games->gamesList[game.gameID].currentQuestion++;

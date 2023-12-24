@@ -36,8 +36,8 @@ using json = nlohmann::json;
 #include "functions/player_join_rejoin_game.hpp"
 #include "functions/owner_rejon.hpp"
 #include "functions/owner_start_lobby.hpp"
-#include "functions/menage_points.hpp"
 #include "functions/send_players_answer_to_owner.hpp"
+#include "functions/menage_points.hpp"
 #include "functions/handle_connection.hpp"
 #include "functions/handle_data.hpp"
 #include "functions/check_if_next_question.hpp"
@@ -45,9 +45,9 @@ using json = nlohmann::json;
 
 int main()
 {
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     Games games;
     UserList userList;
-    pollfd server_events;
 
     games.generateDummyData(2); // Put sample game with id 0 and 1, gamepin is 123
 
@@ -89,14 +89,11 @@ int main()
 
     printf("Server listening on port %d\n", PORT);
 
-    // Create server event listener
-    server_events.fd = server_socket;
-    server_events.events = POLLIN;
-
+ 
     while (1) // Handle acctions
     {
         try{
-            acceptClient(&userList, server_events);
+            acceptClient(&userList, server_socket);
 
             readData(&games, &userList);
 

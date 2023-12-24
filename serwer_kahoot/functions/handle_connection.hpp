@@ -1,10 +1,10 @@
 
-void handleAccept(UserList* userList, User user) // Handle accepting new connection 
+void handleAccept(UserList *userList, User user) // Handle accepting new connection
 {
     // Find the first available userID
     int firstAvailableUserID = 0;
 
-    for (const auto& existingUser : userList->users)
+    for (const auto &existingUser : userList->users)
     {
         if (existingUser.userID != -1) // userID = -1 means user is disconnected
         {
@@ -16,7 +16,7 @@ void handleAccept(UserList* userList, User user) // Handle accepting new connect
         }
     }
 
-    //Create pollfd 
+    // Create pollfd
 
     user.userID = firstAvailableUserID;
 
@@ -43,30 +43,32 @@ void handleAccept(UserList* userList, User user) // Handle accepting new connect
 
     printf("Assigned userID: %d\n", user.userID);
 }
-
-void acceptClient(UserList *userList, pollfd server_events) // Accept new connection
+void acceptClient(UserList *userList, int server_socket) // Accept new connection
 {
     struct sockaddr_in client_addr;
     socklen_t addr_size;
     User user;
 
-    int server_poll = poll(&server_events, 1, 0);
+    addr_size = sizeof(client_addr);
+    user.client_socket = accept(server_socket, (struct sockaddr *)&client_addr, &addr_size); // Accept connection
 
-    if (server_poll > 0 && (server_events.revents & POLLIN)) // If new event at server descriptor 
+    if (user.client_socket == -1)
     {
-        addr_size = sizeof(client_addr);
-        user.client_socket = accept(server_events.fd, (struct sockaddr *)&client_addr, &addr_size); // Accept connection
-
-        if (user.client_socket == -1)
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
+            // No incoming connection, try again later
+            return;
+        }
+        else
         {
             perror("Error accepting connection");
-            close(server_events.fd);
+            close(server_socket);
             exit(EXIT_FAILURE);
         }
-
-        printf("Connection accepted from %s:%d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-        handleAccept(userList, user); // Handle accept
     }
+
+    printf("Connection accepted from %s:%d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+    handleAccept(userList, user); // Handle accept
 }
 
 void disconnectClient(Games *games, UserList *userList, User user, int i) // Disconnect user
@@ -74,7 +76,7 @@ void disconnectClient(Games *games, UserList *userList, User user, int i) // Dis
     // Zamknięcie połączenia przez klienta
     cout << "Connection closed by client " << userList->users[i].userID << endl;
 
-    close(userList->users[i].client_socket); // Close any exitisng descriptor 
+    close(userList->users[i].client_socket); // Close any exitisng descriptor
     close(userList->eventListener[i].fd);
     close(userList->sendListener[i].fd);
     close(user.client_socket);
@@ -86,7 +88,7 @@ void disconnectClient(Games *games, UserList *userList, User user, int i) // Dis
         GameDetails game = games->gamesList[p];
         cout << "sprawdzam gre o id " << p << endl;
 
-        for (int u = 0; u < static_cast<int>(game.users.size()); u++) // Find user in game 
+        for (int u = 0; u < static_cast<int>(game.users.size()); u++) // Find user in game
         {
             cout << "sprawdzam uzytkownika o id " << u << endl;
 
@@ -98,7 +100,7 @@ void disconnectClient(Games *games, UserList *userList, User user, int i) // Dis
                     games->gamesList[p].gameOwnerID = -1;
 
                 found = true;
-                break; 
+                break;
             }
         }
 
@@ -123,9 +125,8 @@ void disconnectClient(Games *games, UserList *userList, User user, int i) // Dis
 
         // Inserting emptyUser into userList
         userList->users[i] = emptyUser;
-        
-        // Inserting an empty string into the buffer
-        userList->buffer[i] =  "";
 
+        // Inserting an empty string into the buffer
+        userList->buffer[i] = "";
     }
 }

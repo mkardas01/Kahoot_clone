@@ -1,8 +1,6 @@
 void createGame(Games *games, json gameData, User user, UserList *userList)
 {
 
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
-
     GameDetails newGame; // Create new game
 
     newGame.gameID = games->gamesList.size();                         // Set gameid

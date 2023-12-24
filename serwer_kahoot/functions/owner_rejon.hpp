@@ -10,15 +10,15 @@ void handleStartWithOutRejoin(Games *games, json gameData, User user, UserList *
     jsonMessage["type"] = "startWatingForPlayer";
 
     // Check game info
-    if (!games->gamesList.empty() && gameID >= 0 && gameID < static_cast<int>(games->gamesList.size()) && games->gamesList[gameID].gamePin == gamePin && games->gamesList[gameID].gameStatus == "notWaitingForPlayers")
+    if (!games->gamesList.empty() && gameID >= 0 && gameID < static_cast<int>(games->gamesList.size()) && games->gamesList[gameID].gamePin == gamePin && games->gamesList[gameID].gameStatus == notWaitingForPlayers)
     {
         jsonMessage["status"] = "success";                         // Ssend success
-        games->gamesList[gameID].gameStatus = "waitingForPlayers"; // Set status
+        games->gamesList[gameID].gameStatus = waitingForPlayers; // Set status
         games->gamesList[gameID].gameOwnerID = user.userID;        // Set game owner
         games->gamesList[gameID].users.push_back(user);            // Push owner to users in game with empty nickname 
     }
-    else if (!games->gamesList.empty() && (games->gamesList[gameID].gameStatus == "waitingForPlayers" ||
-                                           games->gamesList[gameID].gameStatus == "started")) // Game is waiting for players (lobby) or is started
+    else if (!games->gamesList.empty() && (games->gamesList[gameID].gameStatus == waitingForPlayers ||
+                                           games->gamesList[gameID].gameStatus == started)) // Game is waiting for players (lobby) or is started
     {
         jsonMessage["status"] = "waiting";
     }
@@ -53,7 +53,7 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
             }
         }
 
-        if (games->gamesList[gameID].gameStatus == "started") // If game is already on
+        if (games->gamesList[gameID].gameStatus == started) // If game is already on
         {
             json question = questionsToJson(&games->gamesList[gameID]);
             question["type"] = "questionOwner";

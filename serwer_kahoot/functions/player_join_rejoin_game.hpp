@@ -10,7 +10,7 @@ string handleAddingUserToGame(Games *games, json gameData, User user, UserList *
     if (!games->gamesList.empty() && gameID >= 0 &&
         gameID < static_cast<int>(games->gamesList.size()) &&
         games->gamesList[gameID].gamePin == gamePin &&
-        games->gamesList[gameID].gameStatus == waitingForPlayers) // Check if game is available 
+        games->gamesList[gameID].gameStatus == "waitingForPlayers") // Check if game is available 
 
     {
 
@@ -20,7 +20,7 @@ string handleAddingUserToGame(Games *games, json gameData, User user, UserList *
 
         sendPlayerToWaitingList(games, user, gameID, userList); // Send user to lobby (owner see who joined the game)
     }
-    else if (!games->gamesList.empty() && games->gamesList[gameID].gameStatus == started)
+    else if (!games->gamesList.empty() && games->gamesList[gameID].gameStatus == "started")
     {
         status = "started";
     }

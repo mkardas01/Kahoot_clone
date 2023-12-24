@@ -22,28 +22,30 @@ void handleData(Games *games, json gameData, User user, UserList *userList) // H
     }
 }
 
-void readData(Games *games, UserList *userList) // Read data
+void readData(Games *games, UserList *userList)
 {
     char buf[256];
     ssize_t bytesRead;
+    int timeout = 500;
 
-
-    for (int i = 0; i < static_cast<int>(userList->eventListener.size()); i++) // Iterate through all users
+    for (int i = 0; i < static_cast<int>(userList->eventListener.size()); i++)
     {
         User user = userList->users[i];
         string message;
         size_t newlinePos;
-        
-        int poll_users = poll(&userList->eventListener[i], 1, 0);
+
+        int poll_users = poll(&userList->eventListener[i], 1, timeout);
 
         if (userList->buffer.size() < userList->eventListener.size())
-            userList->buffer.resize(userList->eventListener.size()); // Resize buffor vector if we have more users 
+            userList->buffer.resize(userList->eventListener.size());
 
-        if (user.userID != -1 && poll_users > 0 && (userList->eventListener[i].revents & POLLIN)) // Check if users is not disconnected (id != -1) and if user sent something 
+        if (user.userID != -1 && poll_users > 0 && (userList->eventListener[i].revents & POLLIN))
         {
             try
             {
-                while (poll_users > 0 && (userList->eventListener[i].revents & POLLIN) && (bytesRead = read(userList->eventListener[i].fd, buf, sizeof(buf) - 1)) > 0) // Read data
+                bytesRead = read(userList->eventListener[i].fd, buf, sizeof(buf) - 1);
+
+                if (bytesRead > 0)
                 {
                     buf[bytesRead] = '\0'; // Ensure null-termination
 
@@ -54,54 +56,39 @@ void readData(Games *games, UserList *userList) // Read data
                     // Check if the newline character is present in the buffer
                     newlinePos = userList->buffer[i].find("\n");
 
-                    if (newlinePos != std::string::npos) // If newline character is present break
+                    if (newlinePos != std::string::npos)
                     {
-                        break;
+                        message = userList->buffer[i].substr(0, newlinePos);
+
+                        userList->buffer[i].erase(0, newlinePos + 1);
+
+                        json jsonData;
+
+                        printf("Received data: %s\n", message.c_str());
+
+                        try
+                        {
+                            jsonData = json::parse(message);
+                            printf("Type: %s\n", jsonData["type"].get<std::string>().c_str());
+
+                            handleData(games, jsonData, user, userList);
+
+                            cout << user.userID << endl;
+                        }
+                        catch (...)
+                        {
+                            cerr << "Niezidentyfikowany wyjatek while parsing data" << std::endl;
+                        }
                     }
-                    
-                    poll_users = poll(&userList->eventListener[i], 1, 0);
+                }
+                else
+                {
+                    disconnectClient(games, userList, user, i);
                 }
             }
             catch (...)
             {
                 cerr << "Niezidentyfikowany wyjatek podczas odczytu" << std::endl;
-            }
-
-            if (bytesRead > 0 && userList->buffer[i].find("\n") != std::string::npos) // If user didn't disconnect and \n in buffor
-            {
-                try
-                {
-                    message = userList->buffer[i].substr(0, newlinePos);
-
-                    userList->buffer[i].erase(0, newlinePos + 1); // Cut data from buffer to newline character
-
-                    json jsonData;
-
-                    printf("Received data: %s\n", message.c_str());
-
-                    try
-                    {
-                        jsonData = json::parse(message); // parse to json
-                        printf("Type: %s\n", jsonData["type"].get<std::string>().c_str());
-
-                        handleData(games, jsonData, user, userList); // Handle data
-
-                        cout << user.userID << endl;
-                    }
-                    catch (...)
-                    {
-                        // Handle invalid JSON
-                        cerr << "Niezidentyfikowany wyjatek while parsing data" << std::endl;
-                    }
-                }
-                catch (...)
-                {
-                    cerr << "Niezidentyfikowany wyjatek bytes read" << std::endl;
-                }
-            }
-            else if(bytesRead <= 0) // If user disconnect
-            {
-                disconnectClient(games, userList, user, i); // Handle disconnect
             }
         }
     }

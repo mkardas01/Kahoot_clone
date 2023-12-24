@@ -4,10 +4,10 @@ void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, U
     cout << "Found game with matching ID. answer to owner" << endl;
 
     // Iterate through users in game
-    for (const User &owner : games->gamesList[gameID].users)
-    {
-        cout << "Checking user in game with ID: " << owner.userID << endl;
-        if (owner.userID == games->gamesList[gameID].gameOwnerID) // Find owner
+    // for (const User &owner : games->gamesList[gameID].users)
+    // {
+        //cout << "Checking user in game with ID: " << owner.userID << endl;
+        if (games->gamesList[gameID].gameOwnerID != -1) // Find owner
         {
             cout << "Found game owner with ID: " << games->gamesList[gameID].gameOwnerID << endl;
 
@@ -25,12 +25,11 @@ void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, U
                 }
             }
 
-            sendComunicate(owner, jsonMessage, userList); // Send nickname to owner
+            sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send nickname to owner
 
             cout << "Sending user ID " << user.userID << " to game owner with ID " << games->gamesList[gameID].gameOwnerID << endl;
-            // You can implement the actual sending logic here, for example, using sockets
             return;
         }
-    }
+    //}
     cout << "Game owner not found in users list for the game." << endl;
 }

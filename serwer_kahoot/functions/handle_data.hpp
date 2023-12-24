@@ -29,6 +29,8 @@ void readData(Games *games, UserList *userList) // Read data
 
     int poll_users = poll(userList->eventListener.data(), userList->eventListener.size(), 0);
 
+    cout<<"poll_users "<<poll_users<<endl;
+
     for (int i = 0; i < static_cast<int>(userList->eventListener.size()); i++) // Iterate through all users
     {
         User user = userList->users[i];
@@ -43,7 +45,7 @@ void readData(Games *games, UserList *userList) // Read data
         {
             try
             {
-                while (poll_users > 0 && (userList->eventListener[i].revents & POLLIN) && (bytesRead = read(userList->eventListener[i].fd, buf, sizeof(buf) - 1)) > 0) // Read data
+                while ((bytesRead = read(userList->eventListener[i].fd, buf, sizeof(buf) - 1))) // Read data 
                 {
                     buf[bytesRead] = '\0'; // Ensure null-termination
 
@@ -65,7 +67,7 @@ void readData(Games *games, UserList *userList) // Read data
                 cerr << "Niezidentyfikowany wyjatek podczas odczytu" << std::endl;
             }
 
-            if (bytesRead > 0 && userList->buffer[i].find("\n") != std::string::npos) // If user didn't disconnect and \n in buffor
+            if (bytesRead > 0) // If user didn't disconnect
             {
                 try
                 {
@@ -97,7 +99,7 @@ void readData(Games *games, UserList *userList) // Read data
                     cerr << "Niezidentyfikowany wyjatek bytes read" << std::endl;
                 }
             }
-            else if(bytesRead <= 0) // If user disconnect
+            else // If user disconnect
             {
                 disconnectClient(games, userList, user, i); // Handle disconnect
             }

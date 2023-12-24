@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <poll.h>
 #include <fcntl.h>
+#include <mutex>
+#include <thread>
 #include "functions/json.hpp"
 
 using namespace std;
@@ -23,6 +25,8 @@ using json = nlohmann::json;
 #define BUFFER_SIZE 1024
 #define SERVER_ADRESS INADDR_ANY
 #define TIME_TO_RESPOND 20
+
+std::mutex acceptReadMutex;
 
 #include "functions/data_structurs.hpp"
 #include "functions/send_data_rank.hpp"
@@ -42,12 +46,28 @@ using json = nlohmann::json;
 #include "functions/handle_data.hpp"
 #include "functions/check_if_next_question.hpp"
 
+void acceptThread(UserList *userList, int server_socket)
+{
+
+    acceptClient(userList, server_socket);
+}
+
+void readThread(Games *games, UserList *userList, vector<GameDetails>* startedGamesList)
+{
+    readData(games, userList, startedGamesList);
+}
+
+void sendQuestionThread(Games *games, UserList *userList, vector<GameDetails>* startedGamesList)
+{
+    checkIfSendNextQuestion(games, userList, startedGamesList);
+}
 
 int main()
 {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     Games games;
     UserList userList;
+    vector<GameDetails> startedGamesList;
 
     games.generateDummyData(2); // Put sample game with id 0 and 1, gamepin is 123
 
@@ -76,7 +96,7 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    // Set socket to non blocking 
+    // Set socket to non blocking
     fcntl(server_socket, F_SETFL, O_NONBLOCK);
 
     // Listen for incoming connections
@@ -89,19 +109,26 @@ int main()
 
     printf("Server listening on port %d\n", PORT);
 
- 
+    
     while (1) // Handle acctions
     {
-        try{
-            acceptClient(&userList, server_socket);
+        try
+        {
+            std::thread acceptThreadObj(acceptThread, &userList, server_socket);
+            acceptThreadObj.detach();
 
-            readData(&games, &userList);
+            std::thread readThreadObj(readThread, &games, &userList, &startedGamesList);
+            readThreadObj.detach();
 
-            checkIfSendNextQuestion(&games, &userList);
+            std::thread sendQuestionThreadObj(sendQuestionThread, &games, &userList, &startedGamesList);
+            sendQuestionThreadObj.detach();
 
-            //printGames(games, &userList);
-            
-        }catch(...){
+            std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Sleep for 300 ms
+
+            // printGames(games, &userList);
+        }
+        catch (...)
+        {
             cerr << "Niezidentyfikowany wyjatek" << std::endl;
         }
     }

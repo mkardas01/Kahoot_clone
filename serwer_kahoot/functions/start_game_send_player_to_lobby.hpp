@@ -6,24 +6,24 @@ void sendPlayerToWaitingList(Games *games, User user, int gameID, UserList *user
     cout << "Found game with matching ID. waiting list" << endl;
 
     // Iterate through game's users
-    for (const User &gameUser : game.users)
-    {
-        cout << "Checking user in game with ID: " << gameUser.userID << endl;
-        if (gameUser.userID == game.gameOwnerID && user.userID != game.gameOwnerID) // Find owner
-        {
+    // for (const User &gameUser : game.users)
+    // {
+    //     cout << "Checking user in game with ID: " << gameUser.userID << endl;
+    //     if (gameUser.userID == game.gameOwnerID && user.userID != game.gameOwnerID) // Find owner
+    //     {
             cout << "Found game owner with ID: " << game.gameOwnerID << endl;
 
             json jsonMessage;
             jsonMessage["type"] = "playerJoin";
             jsonMessage["player"] = user.nickname;
 
-            sendComunicate(gameUser, jsonMessage, userList); // Send info about joining user to game owner
+            sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send info about joining user to game owner
 
             cout << "Sending user ID " << user.userID << " to game owner with ID " << game.gameOwnerID << endl;
 
             return;
-        }
-    }
+    //     }
+    // }
     cout << "Game owner not found in users list for the game." << endl;
 
     cout << "Game not found for user with ID " << user.userID << endl;

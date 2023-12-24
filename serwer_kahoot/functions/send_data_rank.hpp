@@ -37,14 +37,14 @@ void sendPointsSummary(Games *games, UserList *userList, int gameID) // Send poi
     // Iterate through sorted users and add them to the message
     for (const User &user : game.users)
     {
-        if (user.nickname != "") // Check if user is not a owner (owner can be showed in summary)
-        {
+        // if (user.nickname != "") // Check if user is not a owner (owner can be showed in summary)
+        // {
             json userObj;
             userObj["nickname"] = user.nickname;
             userObj["points"] = user.points;
 
             jsonMessage["users"].push_back(userObj); // Add users
-        }
+        //}
     }
 
     // Send the points summary to each player in game

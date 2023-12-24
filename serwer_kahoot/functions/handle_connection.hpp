@@ -95,6 +95,12 @@ void disconnectClient(Games *games, UserList *userList, User user, int i) // Dis
         GameDetails game = games->gamesList[p];
         cout << "sprawdzam gre o id " << p << endl;
 
+        if (game.gameOwnerID == user.userID){
+            games->gamesList[p].gameOwnerID = -1;
+            cout<<"usuwam wlasciciela "<<game.gameOwnerID<<endl;
+            break;
+        }
+
         for (int u = 0; u < static_cast<int>(game.users.size()); u++) // Find user in game
         {
             cout << "sprawdzam uzytkownika o id " << u << endl;
@@ -103,8 +109,8 @@ void disconnectClient(Games *games, UserList *userList, User user, int i) // Dis
             {
                 games->gamesList[p].users[u].userID = -1;
 
-                if (game.users[u].userID == game.gameOwnerID) // Check if user was a gameowner if yes set gameownerid to -1
-                    games->gamesList[p].gameOwnerID = -1;
+                // if (game.users[u].userID == game.gameOwnerID) // Check if user was a gameowner if yes set gameownerid to -1
+                //     games->gamesList[p].gameOwnerID = -1;
 
                 found = true;
                 break;

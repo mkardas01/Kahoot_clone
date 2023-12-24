@@ -1,10 +1,3 @@
-enum GameStatus {
-    notWaitingForPlayers,
-    waitingForPlayers,
-    started
-};
-
-
 struct User
 {
     string nickname;

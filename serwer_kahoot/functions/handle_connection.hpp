@@ -66,6 +66,8 @@ void acceptClient(UserList *userList, int server_socket) // Accept new connectio
             exit(EXIT_FAILURE);
         }
     }
+    
+    std::lock_guard<std::mutex> lock(acceptReadMutex); // Zablokuj dostęp do sekcji krytycznej
 
     if (fcntl(user.client_socket, F_SETFL, O_NONBLOCK) == -1)
     {

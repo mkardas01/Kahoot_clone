@@ -29,7 +29,7 @@ void sendPlayerToWaitingList(Games *games, User user, int gameID, UserList *user
     cout << "Game not found for user with ID " << user.userID << endl;
 }
 
-void startGame(Games *games, json gameData, User user, UserList *userList) // start game (stop waiting in lobby for players)
+void startGame(Games *games, json gameData, User user, UserList *userList, vector<GameDetails>* startedGamesList) // start game (stop waiting in lobby for players)
 {
     json jsonMessage;
     jsonMessage["type"] = "startGame"; // Prepare json message 
@@ -39,7 +39,9 @@ void startGame(Games *games, json gameData, User user, UserList *userList) // st
     jsonMessage["status"] = "started";
 
     games->gamesList[gameID].gameStatus = "started"; // Change game status
-
+  
+    startedGamesList->push_back(games->gamesList[gameID]);
+    
     sendComunicate(user, jsonMessage, userList); // Send respond to owner
     sendQuestionsOrEndOfGame(games, gameID, false, userList); // Send questions to players
 }

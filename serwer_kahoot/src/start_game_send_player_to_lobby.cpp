@@ -1,9 +1,23 @@
+#include <iostream>
+#include <poll.h>
+
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+
+#include "../include/data_structurs.hpp"
+#include "../include/send_data_rank.hpp"
+#include "../include/send_questions_or_endofgame.hpp"
+
+
+#include "../include/start_game_send_player_to_lobby.hpp"
+
 void sendPlayerToWaitingList(Games *games, User user, int gameID, UserList *userList) // handle lobby 
 {
-    cout << "wysylam gracza";
+    std::cout << "wysylam gracza";
     GameDetails game = games->gamesList[gameID];
 
-    cout << "Found game with matching ID. waiting list" << endl;
+    std::cout << "Found game with matching ID. waiting list" << std::endl;
 
     // Iterate through game's users
     // for (const User &gameUser : game.users)
@@ -11,7 +25,7 @@ void sendPlayerToWaitingList(Games *games, User user, int gameID, UserList *user
     //     cout << "Checking user in game with ID: " << gameUser.userID << endl;
     //     if (gameUser.userID == game.gameOwnerID && user.userID != game.gameOwnerID) // Find owner
     //     {
-            cout << "Found game owner with ID: " << game.gameOwnerID << endl;
+            std::cout << "Found game owner with ID: " << game.gameOwnerID << std::endl;
 
             json jsonMessage;
             jsonMessage["type"] = "playerJoin";
@@ -19,17 +33,17 @@ void sendPlayerToWaitingList(Games *games, User user, int gameID, UserList *user
 
             sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send info about joining user to game owner
 
-            cout << "Sending user ID " << user.userID << " to game owner with ID " << game.gameOwnerID << endl;
+            std::cout << "Sending user ID " << user.userID << " to game owner with ID " << game.gameOwnerID << std::endl;
 
             return;
     //     }
     // }
-    cout << "Game owner not found in users list for the game." << endl;
+    std::cout << "Game owner not found in users list for the game." << std::endl;
 
-    cout << "Game not found for user with ID " << user.userID << endl;
+    std::cout << "Game not found for user with ID " << user.userID << std::endl;
 }
 
-void startGame(Games *games, json gameData, User user, UserList *userList, vector<GameDetails>* startedGamesList) // start game (stop waiting in lobby for players)
+void startGame(Games *games, json gameData, User user, UserList *userList, std::vector<GameDetails>* startedGamesList) // start game (stop waiting in lobby for players)
 {
     json jsonMessage;
     jsonMessage["type"] = "startGame"; // Prepare json message 

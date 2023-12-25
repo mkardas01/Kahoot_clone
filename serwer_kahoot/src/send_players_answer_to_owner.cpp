@@ -1,7 +1,21 @@
+#include <iostream>
+#include <poll.h>
+
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+
+#include "../include/data_structurs.hpp"
+#include "../include/send_data_rank.hpp"
+
+
+#include "../include/send_players_answer_to_owner.hpp"
+
+
 void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, UserList *userList) // Send user answer to owner
 {
 
-    cout << "Found game with matching ID. answer to owner" << endl;
+    std::cout << "Found game with matching ID. answer to owner" << std::endl;
 
     // Iterate through users in game
     // for (const User &owner : games->gamesList[gameID].users)
@@ -9,7 +23,7 @@ void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, U
         //cout << "Checking user in game with ID: " << owner.userID << endl;
         if (games->gamesList[gameID].gameOwnerID != -1) // Find owner
         {
-            cout << "Found game owner with ID: " << games->gamesList[gameID].gameOwnerID << endl;
+            std::cout << "Found game owner with ID: " << games->gamesList[gameID].gameOwnerID << std::endl;
 
             json jsonMessage;
             jsonMessage["type"] = "userAnswer";
@@ -27,9 +41,9 @@ void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, U
 
             sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send nickname to owner
 
-            cout << "Sending user ID " << user.userID << " to game owner with ID " << games->gamesList[gameID].gameOwnerID << endl;
+            std::cout << "Sending user ID " << user.userID << " to game owner with ID " << games->gamesList[gameID].gameOwnerID << std::endl;
             return;
         }
     //}
-    cout << "Game owner not found in users list for the game." << endl;
+    std::cout << "Game owner not found in users list for the game." << std::endl;
 }

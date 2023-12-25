@@ -1,3 +1,19 @@
+#include <iostream>
+#include <poll.h>
+
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+
+#include "../include/data_structurs.hpp"
+#include "../include/send_data_rank.hpp"
+#include "../include/check_if_user_in_game.hpp"
+#include "../include/owner_rejon.hpp"
+
+
+#include "../include/owner_start_lobby.hpp"
+
+
 void startWatingForPlayer(Games *games, json gameData, User user, UserList *userList) // Start lobby
 {
     if (userNotInAnyGame(games, user)) // Check if user how want to start lobby is not in any other game 
@@ -7,7 +23,7 @@ void startWatingForPlayer(Games *games, json gameData, User user, UserList *user
         if (games->gamesList[gameID].gameOwnerID != -1) // Check if game hadn't had any previous owner
         {
             handleStartWithOutRejoin(games, gameData, user, userList); // Handle starting lobby without rejoining
-            cout << " wlasciciela" << games->gamesList[gameID].gameOwnerID << endl;
+            std::cout << " wlasciciela" << games->gamesList[gameID].gameOwnerID << std::endl;
         }
         else // Game had previous owner
             handleStartWithRejoin(games, gameData, user, userList); // Handle starting lobby with rejoining

@@ -1,4 +1,20 @@
-void checkIfSendNextQuestion(Games *games, UserList *userList, vector<GameDetails> *startedGamesList) // Check if it's time to send new question to players
+#include <iostream>
+#include <vector>
+#include <poll.h>
+
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+#include "../include/data_structurs.hpp"
+#include "../include/const_data.hpp"
+
+#include "../include/send_data_rank.hpp"
+#include "../include/send_questions_or_endofgame.hpp"
+
+#include "../include/check_if_next_question.hpp"
+
+
+void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameDetails> *startedGamesList) // Check if it's time to send new question to players
 {
 
     for (const GameDetails &checkGame : *startedGamesList)
@@ -18,7 +34,7 @@ void checkIfSendNextQuestion(Games *games, UserList *userList, vector<GameDetail
                 if (game.questionsNumber <= games->gamesList[game.gameID].currentQuestion)
                 { // stop game if no more questions
 
-                    cout << "usuwam graczy z gry";
+                    std::cout << "usuwam graczy z gry";
 
                     sendPointsSummary(games, userList, game.gameID);              // Send summary to everyone
                     sendQuestionsOrEndOfGame(games, game.gameID, true, userList); // Send end of game to everoyne

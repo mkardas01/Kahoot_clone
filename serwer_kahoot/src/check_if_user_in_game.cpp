@@ -1,3 +1,11 @@
+#include <iostream>
+#include <string>
+#include <poll.h>
+
+#include "../include/data_structurs.hpp"
+
+#include "../include/check_if_user_in_game.hpp"
+
 bool userNotInAnyGame(Games *games, User user) // Check if user is not in any game
 {
 

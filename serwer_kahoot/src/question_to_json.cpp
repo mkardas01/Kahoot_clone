@@ -1,3 +1,16 @@
+#include <poll.h>
+
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+
+#include "../include/data_structurs.hpp"
+#include "../include/owner_rejon.hpp"
+
+
+
+#include "../include/question_to_json.hpp"
+
 json questionsToJson(const GameDetails *game) // Get questions to json
 {
     json jsonGame;

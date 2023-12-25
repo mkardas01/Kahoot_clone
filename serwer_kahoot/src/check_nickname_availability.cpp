@@ -1,4 +1,10 @@
-string nickNameStatus(Games *games, int gameID, string &gameNickname) // Check nickname status
+#include <string>
+#include <poll.h>
+#include "../include/data_structurs.hpp"
+
+#include "../include/check_nickname_availability.hpp"
+
+std::string nickNameStatus(Games *games, int gameID, std::string &gameNickname) // Check nickname status
 {
     // Check if the gameID is valid
     if (gameID < 0 || gameID >= static_cast<int>(games->gamesList.size()))

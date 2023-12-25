@@ -1,10 +1,24 @@
+#include <iostream>
+#include <poll.h>
+
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+
+#include "../include/data_structurs.hpp"
+#include "../include/send_data_rank.hpp"
+#include "../include/question_to_json.hpp"
+
+
+#include "../include/send_questions_or_endofgame.hpp"
+
 void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList *userList) // Handle questions and end of game
 {
 
     json jsonMessage;
     GameDetails game = games->gamesList[gameID];
 
-    cout << "Found game with matching ID. questions" << endl;
+    std::cout << "Found game with matching ID. questions" << std::endl;
 
     for (const User &gameUser : game.users) // Send current question or end of game to all users 
     {
@@ -23,7 +37,6 @@ void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList
     //Handle owner
     if (!endOfGame) // If game is still on
         {
-            jsonMessage = questionsToJson(&game); // Get question
             jsonMessage["type"] = "questionOwner";
             
             sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send it 
@@ -34,7 +47,7 @@ void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList
             sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList);// Send comunicate about ending of game
         }
 
-
-    games->gamesList[gameID].startTime = std::chrono::time_point_cast<std::chrono::steady_clock::duration>(std::chrono::steady_clock::now()); // Start timer of current question
+    if(!endOfGame)
+        games->gamesList[gameID].startTime = std::chrono::time_point_cast<std::chrono::steady_clock::duration>(std::chrono::steady_clock::now()); // Start timer of current question
 
 }

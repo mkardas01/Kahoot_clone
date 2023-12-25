@@ -1,3 +1,14 @@
+#include <iostream>
+#include <poll.h>
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+
+#include "../include/data_structurs.hpp"
+#include "../include/send_players_answer_to_owner.hpp"
+#include "../include/menage_points.hpp"
+
+
 void putPointsToUser(Games *games, json gameData, User user, UserList *userList) // Add points to user
 {
 
@@ -8,7 +19,7 @@ void putPointsToUser(Games *games, json gameData, User user, UserList *userList)
 
         auto currentTime = std::chrono::steady_clock::now();
         auto points = std::chrono::duration_cast<std::chrono::seconds>(currentTime - games->gamesList[gameID].startTime); // Calculate tiem
-
+        
 
         // Update the user in the gamesList
         int position = 0;

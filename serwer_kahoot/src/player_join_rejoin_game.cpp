@@ -1,11 +1,27 @@
-string handleAddingUserToGame(Games *games, json gameData, User user, UserList *userList)
+#include <iostream>
+#include <string>
+#include <poll.h>
+
+#include "../include/data_structurs.hpp"
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+#include "../include/send_data_rank.hpp"
+#include "../include/start_game_send_player_to_lobby.hpp"
+#include "../include/check_if_user_in_game.hpp"
+#include "../include/check_nickname_availability.hpp"
+
+#include "../include/player_join_rejoin_game.hpp"
+
+
+std::string handleAddingUserToGame(Games *games, json gameData, User user, UserList *userList)
 {
 
-    string status;
+    std::string status;
 
     int gameID = gameData["gameID"].get<int>();
     int gamePin = gameData["gamePin"].get<int>();
-    string gameNickname = gameData["nickname"].get<string>();
+    std::string gameNickname = gameData["nickname"].get<std::string>();
 
     if (!games->gamesList.empty() && gameID >= 0 &&
         gameID < static_cast<int>(games->gamesList.size()) &&
@@ -32,10 +48,10 @@ string handleAddingUserToGame(Games *games, json gameData, User user, UserList *
     return status;
 }
 
-string handleReJoin(Games *games, json gameData, User user) // handle rejoin to game (only players)
+std::string handleReJoin(Games *games, json gameData, User user) // handle rejoin to game (only players)
 {
     int gameID = gameData["gameID"].get<int>();
-    string gameNickname = gameData["nickname"].get<string>();
+    std::string gameNickname = gameData["nickname"].get<std::string>();
 
     for (User &userFind : games->gamesList[gameID].users) // Iterate through games 
     {
@@ -53,10 +69,10 @@ void joinGame(Games *games, json gameData, User user, UserList *userList) // Joi
 {
     int gameID = gameData["gameID"].get<int>();
     int gamePin = gameData["gamePin"].get<int>();
-    string gameNickname = gameData["nickname"].get<string>();
+    std::string gameNickname = gameData["nickname"].get<std::string>();
 
-    cout << gameID << endl;
-    cout << gamePin << endl;
+    std::cout << gameID << std::endl;
+    std::cout << gamePin << std::endl;
 
     json jsonMessage;
     jsonMessage["type"] = "joinGame";
@@ -64,7 +80,7 @@ void joinGame(Games *games, json gameData, User user, UserList *userList) // Joi
     if (userNotInAnyGame(games, user)) // Check if user is not in any other game 
     {
 
-        string checkNickNameStatus = nickNameStatus(games, gameID, gameNickname); // Check nickname status
+        std::string checkNickNameStatus = nickNameStatus(games, gameID, gameNickname); // Check nickname status
 
         if (checkNickNameStatus == "unavailable")
         {

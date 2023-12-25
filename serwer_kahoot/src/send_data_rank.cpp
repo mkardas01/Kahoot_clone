@@ -1,3 +1,14 @@
+#include <poll.h>
+#include <netinet/in.h>
+
+#include "../include/json.hpp"
+
+#include "../include/data_structurs.hpp"
+
+using json = nlohmann::json;
+
+#include "../include/send_data_rank.hpp"
+
 void sendComunicate(User user, json communicate, UserList *userList) // send message to specific user
 {
     if (user.userID != -1) // Checj=k if user is not disconnected 

@@ -63,5 +63,6 @@
         "vector": "cpp",
         "algorithm": "cpp",
         "list": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/Users/mateuszkardas/Documents/STUDIA/kahoot-final/serwer_kahoot"
 }

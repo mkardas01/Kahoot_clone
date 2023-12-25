@@ -1,6 +1,6 @@
 struct User
 {
-    string nickname;
+    std::string nickname;
     int userID;
     int client_socket;
     int points;
@@ -13,16 +13,16 @@ struct User
 
 struct UserList
 {
-    vector<pollfd> eventListener;
-    vector<pollfd> sendListener;
-    vector<User> users;
-    vector<string> buffer;
+    std::vector<pollfd> eventListener;
+    std::vector<pollfd> sendListener;
+    std::vector<User> users;
+    std::vector<std::string> buffer;
 };
 
 struct Question
 {
-    string question;
-    string answers[4];
+    std::string question;
+    std::string answers[4];
     int indexOfCorrectAnswer;
 };
 
@@ -34,9 +34,9 @@ struct GameDetails
     int questionsNumber;
     int gameOwnerID;
     std::chrono::steady_clock::time_point startTime;
-    string gameStatus;          // notWaitingForPlayers, waitingForPlayers, started
-    vector<Question> questions; // game questions
-    vector<User> users;         // game users
+    std::string gameStatus;          // notWaitingForPlayers, waitingForPlayers, started
+    std::vector<Question> questions; // game questions
+    std::vector<User> users;         // game users
 
     GameDetails()
         : currentQuestion(0), questionsNumber(0), gameOwnerID(-2), gameStatus("notWaitingForPlayers"){
@@ -46,7 +46,7 @@ struct GameDetails
 
 struct Games
 {
-    vector<GameDetails> gamesList; // zawiera gamedetails
+    std::vector<GameDetails> gamesList; // zawiera gamedetails
 
     void generateDummyData(int numberOfGames)
     {

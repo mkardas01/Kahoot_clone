@@ -1,3 +1,16 @@
+#include <iostream>
+#include <string>
+#include <poll.h>
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+#include "../include/data_structurs.hpp"
+#include "../include/send_data_rank.hpp"
+
+
+
+#include "../include/game_create.hpp"
+
 void createGame(Games *games, json gameData, User user, UserList *userList)
 {
 
@@ -10,18 +23,18 @@ void createGame(Games *games, json gameData, User user, UserList *userList)
     for (const auto &questionData : gameData["questions"])
     {
         Question question;
-        question.question = questionData["question"].get<string>();
+        question.question = questionData["question"].get<std::string>();
 
         for (int i = 0; i < 4; ++i)
         {
-            question.answers[i] = questionData["answers"][i].get<string>();
+            question.answers[i] = questionData["answers"][i].get<std::string>();
         }
 
         question.indexOfCorrectAnswer = (int)questionData["indexOfCorrectAnswer"].get<int>();
         newGame.questions.push_back(question); // Set questions
     }
 
-    cout << "Created game with ID: " << newGame.gameID << endl;
+    std::cout << "Created game with ID: " << newGame.gameID << std::endl;
 
     // Add new game to gameList
     games->gamesList.push_back(newGame);

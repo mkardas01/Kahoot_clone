@@ -1,3 +1,13 @@
+#include <poll.h>
+#include <iostream>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include "../include/data_structurs.hpp"
+
+#include "../include/handle_connection.hpp"
 
 void handleAccept(UserList *userList, User user) // Handle accepting new connection
 {
@@ -41,7 +51,7 @@ void handleAccept(UserList *userList, User user) // Handle accepting new connect
 
     userList->users[user.userID] = user; // Add user to userList
 
-    printf("Assigned userID: %d\n", user.userID);
+    printf("Assigned userID: %d", user.userID);
 }
 void acceptClient(UserList *userList, int server_socket) // Accept new connection
 {
@@ -66,8 +76,6 @@ void acceptClient(UserList *userList, int server_socket) // Accept new connectio
             exit(EXIT_FAILURE);
         }
     }
-    
-    std::lock_guard<std::mutex> lock(acceptReadMutex); // Zablokuj dostęp do sekcji krytycznej
 
     if (fcntl(user.client_socket, F_SETFL, O_NONBLOCK) == -1)
     {
@@ -76,14 +84,14 @@ void acceptClient(UserList *userList, int server_socket) // Accept new connectio
         exit(EXIT_FAILURE);
     }
 
-    printf("Connection accepted from %s:%d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+    printf("Connection accepted from %s:%d", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
     handleAccept(userList, user); // Handle accept
 }
 
 void disconnectClient(Games *games, UserList *userList, User user, int i) // Disconnect user
 {
     // Zamknięcie połączenia przez klienta
-    cout << "Connection closed by client " << userList->users[i].userID << endl;
+    std::cout << "Connection closed by client " << userList->users[i].userID << std::endl;
 
     close(userList->users[i].client_socket); // Close any exitisng descriptor
     close(userList->eventListener[i].fd);
@@ -95,17 +103,18 @@ void disconnectClient(Games *games, UserList *userList, User user, int i) // Dis
     for (int p = 0; p < static_cast<int>(games->gamesList.size()); p++) // Find disconnected user in game
     {
         GameDetails game = games->gamesList[p];
-        cout << "sprawdzam gre o id " << p << endl;
+        std::cout << "sprawdzam gre o id " << p << std::endl;
 
-        if (game.gameOwnerID == user.userID){
+        if (game.gameOwnerID == user.userID)
+        {
             games->gamesList[p].gameOwnerID = -1;
-            cout<<"usuwam wlasciciela "<<game.gameOwnerID<<endl;
+            std::cout << "usuwam wlasciciela " << game.gameOwnerID << std::endl;
             break;
         }
 
         for (int u = 0; u < static_cast<int>(game.users.size()); u++) // Find user in game
         {
-            cout << "sprawdzam uzytkownika o id " << u << endl;
+            std::cout << "sprawdzam uzytkownika o id " << u << std::endl;
 
             if (game.users[u].userID == user.userID) // Set his userid to -1 (id -1 means disconnected)
             {

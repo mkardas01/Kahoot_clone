@@ -1,10 +1,25 @@
+#include <iostream>
+#include <poll.h>
+
+#include "../include/data_structurs.hpp"
+#include "../include/json.hpp"
+using json = nlohmann::json;
+
+#include "../include/send_data_rank.hpp"
+#include "../include/question_to_json.hpp"
+
+
+#include "../include/owner_rejon.hpp"
+
+
+
 void handleStartWithOutRejoin(Games *games, json gameData, User user, UserList *userList) // Handle start (owner)
 {
     int gameID = gameData["gameID"].get<int>();
     int gamePin = gameData["gamePin"].get<int>();
 
-    cout << gameID;
-    cout << gamePin;
+    std::cout << gameID;
+    std::cout << gamePin;
 
     json jsonMessage;
     jsonMessage["type"] = "startWatingForPlayer";
@@ -35,8 +50,8 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
     int gameID = gameData["gameID"].get<int>();
     int gamePin = gameData["gamePin"].get<int>();
 
-    cout << gameID;
-    cout << gamePin;
+    std::cout << gameID;
+    std::cout << gamePin;
 
     json jsonMessage;
     jsonMessage["type"] = "reJoinOwner"; // Prepare json type respond

@@ -4,7 +4,7 @@ include_directories(include)
 project(serwer CXX)
 
 # Ustaw standard C++
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 
 # Dodaj flagę -Wall
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")

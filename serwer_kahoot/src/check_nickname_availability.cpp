@@ -1,5 +1,7 @@
 #include <string>
 #include <poll.h>
+#include <chrono>
+#include <vector>
 #include "../include/data_structurs.hpp"
 
 #include "../include/check_nickname_availability.hpp"

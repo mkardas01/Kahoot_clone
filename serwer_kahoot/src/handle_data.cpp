@@ -19,31 +19,31 @@ using json = nlohmann::json;
 #include "../include/handle_data.hpp"
 
 
-void handleData(Games *games, json gameData, User user, UserList *userList, std::vector<GameDetails> *startedGamesList) // Handle data from users
+void handleData(Games *games, json gameData, User user, UserList *userList, std::vector<GameDetails> *startedGamesList, MessageQueue* messageQueue) // Handle data from users
 {
     if (gameData["type"].get<std::string>() == CreateGameStatus)
     {
-        createGame(games, gameData, user, userList);
+        createGame(games, gameData, user, userList, messageQueue);
     }
     else if (gameData["type"].get<std::string>() == StartWaitingForPLayer)
     {
-        startWatingForPlayer(games, gameData, user, userList);
+        startWatingForPlayer(games, gameData, user, userList, messageQueue);
     }
     else if (gameData["type"].get<std::string>() == JoinGameStatus)
     {
-        joinGame(games, gameData, user, userList);
+        joinGame(games, gameData, user, userList, messageQueue);
     }
     else if (gameData["type"].get<std::string>() == StartGameStatus)
     {
-        startGame(games, gameData, user, userList, startedGamesList);
+        startGame(games, gameData, user, userList, startedGamesList, messageQueue);
     }
     else if (gameData["type"].get<std::string>() == ANSWER)
     {
-        putPointsToUser(games, gameData, user, userList);
+        putPointsToUser(games, gameData, user, userList, messageQueue);
     }
 }
 
-void readData(Games *games, UserList *userList, std::vector<GameDetails> *startedGamesList)
+void readData(Games *games, UserList *userList, std::vector<GameDetails> *startedGamesList, MessageQueue* messageQueue)
 {
     if (poll(userList->eventListener.data(), userList->eventListener.size(), 0))
     {
@@ -95,7 +95,7 @@ void readData(Games *games, UserList *userList, std::vector<GameDetails> *starte
                                 jsonData = json::parse(message);
                                 printf("Type: %s", jsonData["type"].get<std::string>().c_str());
 
-                                handleData(games, jsonData, user, userList, startedGamesList);
+                                handleData(games, jsonData, user, userList, startedGamesList, messageQueue);
 
                                 std::cout << user.userID << std::endl;
                             }

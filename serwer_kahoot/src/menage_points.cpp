@@ -10,7 +10,7 @@ using json = nlohmann::json;
 #include "../include/menage_points.hpp"
 
 
-void putPointsToUser(Games *games, json gameData, User user, UserList *userList) // Add points to user
+void putPointsToUser(Games *games, json gameData, User user, UserList *userList, MessageQueue* messageQueue) // Add points to user
 {
 
     int gameID = gameData["gameID"].get<int>();
@@ -36,5 +36,5 @@ void putPointsToUser(Games *games, json gameData, User user, UserList *userList)
         }
     }
 
-    sendUserAnswerToOwner(games, gameData, user, gameID, userList); // Send owner info about user's answer
+    sendUserAnswerToOwner(games, gameData, user, gameID, userList, messageQueue); // Send owner info about user's answer
 }

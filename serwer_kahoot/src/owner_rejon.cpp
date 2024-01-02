@@ -16,7 +16,7 @@ using json = nlohmann::json;
 
 
 
-void handleStartWithOutRejoin(Games *games, json gameData, User user, UserList *userList) // Handle start (owner)
+void handleStartWithOutRejoin(Games *games, json gameData, User user, UserList *userList, MessageQueue* messageQueue) // Handle start (owner)
 {
     int gameID = gameData["gameID"].get<int>();
     int gamePin = gameData["gamePin"].get<int>();
@@ -45,10 +45,10 @@ void handleStartWithOutRejoin(Games *games, json gameData, User user, UserList *
         jsonMessage["status"] = "fail"; // Fail game is not existing
     }
 
-    sendComunicate(user, jsonMessage, userList); // Send respond
+    sendComunicate(user, jsonMessage, userList, messageQueue); // Send respond
 }
 
-void handleStartWithRejoin(Games *games, json gameData, User user, UserList *userList) // Handle start with rejoin (owner)
+void handleStartWithRejoin(Games *games, json gameData, User user, UserList *userList, MessageQueue* messageQueue) // Handle start with rejoin (owner)
 {
     int gameID = gameData["gameID"].get<int>();
     int gamePin = gameData["gamePin"].get<int>();
@@ -75,7 +75,7 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
         {
             json question = questionsToJson(&games->gamesList[gameID]);
             question["type"] = QuestionOwner;
-            sendComunicate(user, question, userList); // Send current question to owner
+            sendComunicate(user, question, userList, messageQueue); // Send current question to owner
         }
         else // Game is in lobby
         {
@@ -88,7 +88,7 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
                     playersJson["type"] = PlayerJoin;
                     playersJson["player"] = players.nickname;
 
-                    sendComunicate(user, playersJson, userList); // Send user nickname to owner, to let him see nicknames in lobby
+                    sendComunicate(user, playersJson, userList, messageQueue); // Send user nickname to owner, to let him see nicknames in lobby
                 //}
             }
         }
@@ -102,5 +102,5 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
         jsonMessage["status"] = FAIL; // Game doesn't exists
     }
 
-    sendComunicate(user, jsonMessage, userList); // Send communicate
+    sendComunicate(user, jsonMessage, userList, messageQueue); // Send communicate
 }

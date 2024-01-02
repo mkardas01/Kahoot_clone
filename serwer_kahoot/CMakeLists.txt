@@ -27,6 +27,7 @@ set(SOURCES
      src/handle_connection.cpp
      src/handle_data.cpp
      src/check_if_next_question.cpp
+     src/message_queue.cpp
      )
 
 

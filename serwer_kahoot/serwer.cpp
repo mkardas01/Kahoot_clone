@@ -40,6 +40,7 @@ using json = nlohmann::json;
 #include "include/handle_connection.hpp"
 #include "include/handle_data.hpp"
 #include "include/check_if_next_question.hpp"
+#include "include/message_queue.hpp"
 
 int main()
 {
@@ -47,6 +48,7 @@ int main()
     Games games;
     UserList userList;
     std::vector<GameDetails> startedGamesList;
+    MessageQueue messageQueue;
 
     games.generateDummyData(2); // Put sample game with id 0 and 1, gamepin is 123
 
@@ -93,11 +95,13 @@ int main()
     {
         try
         {
+            checkMessageQueue(&messageQueue);
+
             acceptClient(&userList, server_socket);
 
-            readData(&games, &userList, &startedGamesList);
+            readData(&games, &userList, &startedGamesList, &messageQueue);
 
-            checkIfSendNextQuestion(&games, &userList, &startedGamesList);
+            checkIfSendNextQuestion(&games, &userList, &startedGamesList, &messageQueue);
 
             std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Sleep for 300 ms
 

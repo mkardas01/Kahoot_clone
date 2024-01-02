@@ -17,7 +17,7 @@ using json = nlohmann::json;
 #include "../include/player_join_rejoin_game.hpp"
 
 
-std::string handleAddingUserToGame(Games *games, json gameData, User user, UserList *userList)
+std::string handleAddingUserToGame(Games *games, json gameData, User user, UserList *userList, MessageQueue* messageQueue)
 {
 
     std::string status;
@@ -37,7 +37,7 @@ std::string handleAddingUserToGame(Games *games, json gameData, User user, UserL
         user.nickname = gameNickname;
         games->gamesList[gameID].users.push_back(user); // Add users to game 
 
-        sendPlayerToWaitingList(games, user, gameID, userList); // Send user to lobby (owner see who joined the game)
+        sendPlayerToWaitingList(games, user, gameID, userList, messageQueue); // Send user to lobby (owner see who joined the game)
     }
     else if (!games->gamesList.empty() && games->gamesList[gameID].gameStatus == STARTED)
     {
@@ -68,7 +68,7 @@ std::string handleReJoin(Games *games, json gameData, User user) // handle rejoi
     return "reJoin";
 }
 
-void joinGame(Games *games, json gameData, User user, UserList *userList) // Join game (only players)
+void joinGame(Games *games, json gameData, User user, UserList *userList, MessageQueue* messageQueue) // Join game (only players)
 {
     int gameID = gameData["gameID"].get<int>();
     int gamePin = gameData["gamePin"].get<int>();
@@ -98,7 +98,7 @@ void joinGame(Games *games, json gameData, User user, UserList *userList) // Joi
         else if (checkNickNameStatus == "available")
         {
             // Nickname available
-            jsonMessage["status"] = handleAddingUserToGame(games, gameData, user, userList);
+            jsonMessage["status"] = handleAddingUserToGame(games, gameData, user, userList, messageQueue);
         }
     }
     else
@@ -106,5 +106,5 @@ void joinGame(Games *games, json gameData, User user, UserList *userList) // Joi
         jsonMessage["status"] = "userAlreadyInGame";
     }
 
-    sendComunicate(user, jsonMessage, userList); // Send message to user
+    sendComunicate(user, jsonMessage, userList, messageQueue); // Send message to user
 }

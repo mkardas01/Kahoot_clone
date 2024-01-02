@@ -15,7 +15,7 @@ using json = nlohmann::json;
 #include "../include/check_if_next_question.hpp"
 
 
-void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameDetails> *startedGamesList) // Check if it's time to send new question to players
+void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameDetails> *startedGamesList, MessageQueue* messageQueue) // Check if it's time to send new question to players
 {
 
     for (const GameDetails &checkGame : *startedGamesList)
@@ -37,8 +37,8 @@ void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameD
 
                     std::cout << "usuwam graczy z gry";
 
-                    sendPointsSummary(games, userList, game.gameID);              // Send summary to everyone
-                    sendQuestionsOrEndOfGame(games, game.gameID, true, userList); // Send end of game to everoyne
+                    sendPointsSummary(games, userList, game.gameID, messageQueue);              // Send summary to everyone
+                    sendQuestionsOrEndOfGame(games, game.gameID, true, userList, messageQueue); // Send end of game to everoyne
 
                     games->gamesList[game.gameID].gameStatus = NotWaitingForPlayers; // Change status, game is available to start
                     games->gamesList[game.gameID].currentQuestion = 0;                 // Reset currentquestion counter
@@ -56,8 +56,8 @@ void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameD
                 }
                 else
                 {
-                    sendPointsSummary(games, userList, game.gameID);               // Send rank
-                    sendQuestionsOrEndOfGame(games, game.gameID, false, userList); // Send questions
+                    sendPointsSummary(games, userList, game.gameID, messageQueue);               // Send rank
+                    sendQuestionsOrEndOfGame(games, game.gameID, false, userList, messageQueue); // Send questions
                 }
             }
         }

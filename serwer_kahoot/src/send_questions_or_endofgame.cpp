@@ -13,7 +13,7 @@ using json = nlohmann::json;
 
 #include "../include/send_questions_or_endofgame.hpp"
 
-void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList *userList) // Handle questions and end of game
+void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList *userList, MessageQueue* messageQueue) // Handle questions and end of game
 {
 
     json jsonMessage;
@@ -26,26 +26,27 @@ void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList
         if (!endOfGame) // If game is still on
         {
             jsonMessage = questionsToJson(&game); // Get question
-            sendComunicate(gameUser, jsonMessage, userList); // Send it 
+            sendComunicate(gameUser, jsonMessage, userList, messageQueue); // Send it 
         }
         else // If game is not still on
         {
             jsonMessage["type"] = EndOfGame; 
-            sendComunicate(gameUser, jsonMessage, userList); // Send comunicate about ending of game
+            sendComunicate(gameUser, jsonMessage, userList, messageQueue); // Send comunicate about ending of game
         }
     }
 
     //Handle owner
     if (!endOfGame) // If game is still on
         {
+            jsonMessage = questionsToJson(&game); // Get question
             jsonMessage["type"] = QuestionOwner;
             
-            sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send it 
+            sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList, messageQueue); // Send it 
         }
         else // If game is not still on
         {
             jsonMessage["type"] = EndOfGame; 
-            sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList);// Send comunicate about ending of game
+            sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList, messageQueue);// Send comunicate about ending of game
         }
 
     if(!endOfGame)

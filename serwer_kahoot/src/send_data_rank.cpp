@@ -9,7 +9,7 @@ using json = nlohmann::json;
 
 #include "../include/send_data_rank.hpp"
 
-void sendComunicate(User user, json communicate, UserList *userList) // send message to specific user
+void sendComunicate(User user, json communicate, UserList *userList, MessageQueue *messageQueue) // send message to specific user
 {
     if (user.userID != -1) // Checj=k if user is not disconnected 
     {
@@ -27,11 +27,17 @@ void sendComunicate(User user, json communicate, UserList *userList) // send mes
             {
                 perror("Error sending data");
             }
+        }else{
+            // Add the message to the message queue
+            messageQueue->messages.push_back(dataToSend);
+            messageQueue->users.push_back(user);
+            messageQueue->sendListener.push_back(userList->sendListener[user.userID]);
+            messageQueue->startTime.push_back(std::chrono::steady_clock::now());
         }
     }
 }
 
-void sendPointsSummary(Games *games, UserList *userList, int gameID) // Send points summary
+void sendPointsSummary(Games *games, UserList *userList, int gameID, MessageQueue* messageQueue) // Send points summary
 {
     // Find the game with the given ID
     GameDetails &game = games->gamesList[gameID]; 
@@ -61,9 +67,9 @@ void sendPointsSummary(Games *games, UserList *userList, int gameID) // Send poi
     // Send the points summary to each player in game
     for (const User &gameUser : game.users)
     {
-        sendComunicate(gameUser, jsonMessage, userList);
+        sendComunicate(gameUser, jsonMessage, userList, messageQueue);
     }
 
     // Send it to game owner
-    sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList);
+    sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList, messageQueue);
 }

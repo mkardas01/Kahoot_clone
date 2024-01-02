@@ -12,7 +12,7 @@ using json = nlohmann::json;
 
 #include "../include/game_create.hpp"
 
-void createGame(Games *games, json gameData, User user, UserList *userList)
+void createGame(Games *games, json gameData, User user, UserList *userList, MessageQueue* messageQueue)
 {
 
     GameDetails newGame; // Create new game
@@ -46,5 +46,5 @@ void createGame(Games *games, json gameData, User user, UserList *userList)
     jsonMessage["gameID"] = newGame.gameID;
     jsonMessage["gamePin"] = newGame.gamePin; // Create json respond 
 
-    sendComunicate(user, jsonMessage, userList); // Send json respond to the creator 
+    sendComunicate(user, jsonMessage, userList, messageQueue); // Send json respond to the creator 
 }

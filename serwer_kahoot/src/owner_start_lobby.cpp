@@ -15,7 +15,7 @@ using json = nlohmann::json;
 #include "../include/owner_start_lobby.hpp"
 
 
-void startWatingForPlayer(Games *games, json gameData, User user, UserList *userList) // Start lobby
+void startWatingForPlayer(Games *games, json gameData, User user, UserList *userList, MessageQueue* messageQueue) // Start lobby
 {
     if (userNotInAnyGame(games, user)) // Check if user how want to start lobby is not in any other game 
     {
@@ -23,11 +23,11 @@ void startWatingForPlayer(Games *games, json gameData, User user, UserList *user
 
         if (games->gamesList[gameID].gameOwnerID != -1) // Check if game hadn't had any previous owner
         {
-            handleStartWithOutRejoin(games, gameData, user, userList); // Handle starting lobby without rejoining
+            handleStartWithOutRejoin(games, gameData, user, userList, messageQueue); // Handle starting lobby without rejoining
             std::cout << " wlasciciela" << games->gamesList[gameID].gameOwnerID << std::endl;
         }
         else // Game had previous owner
-            handleStartWithRejoin(games, gameData, user, userList); // Handle starting lobby with rejoining
+            handleStartWithRejoin(games, gameData, user, userList, messageQueue); // Handle starting lobby with rejoining
     }
     else // User is in other game send communicate
     {
@@ -35,6 +35,6 @@ void startWatingForPlayer(Games *games, json gameData, User user, UserList *user
         jsonMessage["type"] = StartWaitingForPLayer;
         jsonMessage["status"] = UserAlreadyInGame;
 
-        sendComunicate(user, jsonMessage, userList);
+        sendComunicate(user, jsonMessage, userList, messageQueue);
     }
 }

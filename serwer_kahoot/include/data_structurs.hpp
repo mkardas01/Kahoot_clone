@@ -1,3 +1,5 @@
+
+
 struct User
 {
     std::string nickname;
@@ -9,6 +11,14 @@ struct User
         : nickname(""), points(0){
 
                      };
+};
+
+struct MessageQueue{
+    std::vector<std::string> messages;
+    std::vector<User> users;
+    std::vector<pollfd> sendListener;
+    std::vector<std::chrono::steady_clock::time_point> startTime;
+
 };
 
 struct UserList

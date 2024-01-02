@@ -13,7 +13,7 @@ using json = nlohmann::json;
 #include "../include/send_players_answer_to_owner.hpp"
 
 
-void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, UserList *userList) // Send user answer to owner
+void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, UserList *userList, MessageQueue* messageQueue) // Send user answer to owner
 {
 
     std::cout << "Found game with matching ID. answer to owner" << std::endl;
@@ -40,7 +40,7 @@ void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, U
                 }
             }
 
-            sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send nickname to owner
+            sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList, messageQueue); // Send nickname to owner
 
             std::cout << "Sending user ID " << user.userID << " to game owner with ID " << games->gamesList[gameID].gameOwnerID << std::endl;
             return;

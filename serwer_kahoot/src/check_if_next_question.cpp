@@ -14,52 +14,53 @@ using json = nlohmann::json;
 
 #include "../include/check_if_next_question.hpp"
 
-
-void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameDetails> *startedGamesList, MessageQueue* messageQueue) // Check if it's time to send new question to players
+void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameDetails> *startedGamesList, MessageQueue *messageQueue) // Check if it's time to send new question to players
 {
 
     for (const GameDetails &checkGame : *startedGamesList)
     {
         GameDetails &game = games->gamesList[checkGame.gameID];
 
-        if (game.gameStatus == STARTED) // Check if game is started
+        std::cout << games->gamesList[game.gameID].usersWhoAnswered << " " << games->gamesList[game.gameID].users.size();
+        auto currentTime = std::chrono::steady_clock::now();
+        if (games->gamesList[game.gameID].currentQuestion < game.questionsNumber)
         {
-
-            auto currentTime = std::chrono::steady_clock::now();
-
-            if ((currentTime - game.startTime) >= std::chrono::seconds(TIME_TO_RESPOND + 10))
+            if ((currentTime - game.startTime) >= std::chrono::seconds(TIME_TO_RESPOND + 10) 
+                || games->gamesList[game.gameID].usersWhoAnswered == games->gamesList[game.gameID].users.size())
             {
-
+                games->gamesList[game.gameID].usersWhoAnswered = 0;
                 games->gamesList[game.gameID].currentQuestion++;
-
-                if (game.questionsNumber <= games->gamesList[game.gameID].currentQuestion)
-                { // stop game if no more questions
-
-                    std::cout << "usuwam graczy z gry";
-
-                    sendPointsSummary(games, userList, game.gameID, messageQueue);              // Send summary to everyone
-                    sendQuestionsOrEndOfGame(games, game.gameID, true, userList, messageQueue); // Send end of game to everoyne
-
-                    games->gamesList[game.gameID].gameStatus = NotWaitingForPlayers; // Change status, game is available to start
-                    games->gamesList[game.gameID].currentQuestion = 0;                 // Reset currentquestion counter
-                    games->gamesList[game.gameID].gameOwnerID = -2;                    // Game is waiting for owner
-                    games->gamesList[game.gameID].users.clear();                       // Delete users from game
-                    auto it = std::find_if(startedGamesList->begin(), startedGamesList->end(),
-                                           [&game](const GameDetails &g)
-                                           {
-                                               return g.gameID == game.gameID;
-                                           });
-
-                    if (it != startedGamesList->end())
-                        // Element found, erase it from the vector
-                        startedGamesList->erase(it);
-                }
-                else
-                {
-                    sendPointsSummary(games, userList, game.gameID, messageQueue);               // Send rank
-                    sendQuestionsOrEndOfGame(games, game.gameID, false, userList, messageQueue); // Send questions
-                }
+                sendPointsSummary(games, userList, game.gameID, messageQueue);               // Send rank
+                sendQuestionsOrEndOfGame(games, game.gameID, false, userList, messageQueue); // Send questions
             }
         }
+        else
+        {
+            endOfGame(games, userList, startedGamesList, game, messageQueue);
+        }
     }
+}
+
+void endOfGame(Games *games, UserList *userList, std::vector<GameDetails> *startedGamesList, GameDetails game, MessageQueue *messageQueue)
+{
+    // stop game if no more questions
+
+    std::cout << "usuwam graczy z gry";
+
+    sendPointsSummary(games, userList, game.gameID, messageQueue);              // Send summary to everyone
+    sendQuestionsOrEndOfGame(games, game.gameID, true, userList, messageQueue); // Send end of game to everoyne
+
+    games->gamesList[game.gameID].gameStatus = NotWaitingForPlayers; // Change status, game is available to start
+    games->gamesList[game.gameID].currentQuestion = 0;               // Reset currentquestion counter
+    games->gamesList[game.gameID].gameOwnerID = -2;                  // Game is waiting for owner
+    games->gamesList[game.gameID].users.clear();                     // Delete users from game
+    auto it = std::find_if(startedGamesList->begin(), startedGamesList->end(),
+                           [&game](const GameDetails &g)
+                           {
+                               return g.gameID == game.gameID;
+                           });
+
+    if (it != startedGamesList->end())
+        // Element found, erase it from the vector
+        startedGamesList->erase(it);
 }

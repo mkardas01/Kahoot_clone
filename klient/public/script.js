@@ -286,6 +286,12 @@ function loadSpiner(newTab, targetVariable, leaveSpinner = false) {
 }
 
 function goToQuestion() { //goToQuestionFunction
+
+    clearInterval(goToQuestionInterval);
+    clearTimeout(goToQuestionTimeOut);
+    
+    questionTimer.innerHTML = timeToRespond;
+
     this.showSpinner = false;
     this.questionTab = 3;
 
@@ -304,8 +310,15 @@ function goToQuestion() { //goToQuestionFunction
 }
 
 function goToTimer() { // goToTimerFunction
-    this.showSpinner = false;
-    this.questionTab = 2;
+    console.log('timer');
+    clearInterval(goToQuestionInterval);
+    clearTimeout(goToQuestionTimeOut);
+    
+    questionTimer.innerHTML = timeToRespond;
+    
+    // this.showSpinner = false;
+    // this.questionTab = 2;
+    loadSpiner.call(this, 2, 'questionTab', false);
 
     this.spinner = false;
 

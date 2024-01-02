@@ -6,6 +6,7 @@
 #include "../include/data_structurs.hpp"
 
 #include "../include/json.hpp"
+#include "../include/const_data.hpp"
 using json = nlohmann::json;
 
 #include "../include/game_create.hpp"
@@ -20,23 +21,23 @@ using json = nlohmann::json;
 
 void handleData(Games *games, json gameData, User user, UserList *userList, std::vector<GameDetails> *startedGamesList) // Handle data from users
 {
-    if (gameData["type"].get<std::string>() == "createGame")
+    if (gameData["type"].get<std::string>() == CreateGameStatus)
     {
         createGame(games, gameData, user, userList);
     }
-    else if (gameData["type"].get<std::string>() == "startWatingForPlayer")
+    else if (gameData["type"].get<std::string>() == StartWaitingForPLayer)
     {
         startWatingForPlayer(games, gameData, user, userList);
     }
-    else if (gameData["type"].get<std::string>() == "joinGame")
+    else if (gameData["type"].get<std::string>() == JoinGameStatus)
     {
         joinGame(games, gameData, user, userList);
     }
-    else if (gameData["type"].get<std::string>() == "startGame")
+    else if (gameData["type"].get<std::string>() == StartGameStatus)
     {
         startGame(games, gameData, user, userList, startedGamesList);
     }
-    else if (gameData["type"].get<std::string>() == "answer")
+    else if (gameData["type"].get<std::string>() == ANSWER)
     {
         putPointsToUser(games, gameData, user, userList);
     }

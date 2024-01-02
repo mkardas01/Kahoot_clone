@@ -2,6 +2,7 @@
 #include <poll.h>
 
 #include "../include/json.hpp"
+#include "../include/const_data.hpp"
 using json = nlohmann::json;
 
 
@@ -31,8 +32,8 @@ void startWatingForPlayer(Games *games, json gameData, User user, UserList *user
     else // User is in other game send communicate
     {
         json jsonMessage;
-        jsonMessage["type"] = "startWatingForPlayer";
-        jsonMessage["status"] = "userAlreadyInGame";
+        jsonMessage["type"] = StartWaitingForPLayer;
+        jsonMessage["status"] = UserAlreadyInGame;
 
         sendComunicate(user, jsonMessage, userList);
     }

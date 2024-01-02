@@ -5,6 +5,7 @@
 
 #include "../include/data_structurs.hpp"
 #include "../include/json.hpp"
+#include "../include/const_data.hpp"
 using json = nlohmann::json;
 
 #include "../include/send_data_rank.hpp"
@@ -24,18 +25,18 @@ void handleStartWithOutRejoin(Games *games, json gameData, User user, UserList *
     std::cout << gamePin;
 
     json jsonMessage;
-    jsonMessage["type"] = "startWatingForPlayer";
+    jsonMessage["type"] = StartWaitingForPLayer;
 
     // Check game info
     if (!games->gamesList.empty() && gameID >= 0 && gameID < static_cast<int>(games->gamesList.size()) && games->gamesList[gameID].gamePin == gamePin && games->gamesList[gameID].gameStatus == "notWaitingForPlayers")
     {
-        jsonMessage["status"] = "success";                         // Ssend success
-        games->gamesList[gameID].gameStatus = "waitingForPlayers"; // Set status
+        jsonMessage["status"] = SUCCESS;                         // Ssend success
+        games->gamesList[gameID].gameStatus = WaitingForPlayers; // Set status
         games->gamesList[gameID].gameOwnerID = user.userID;        // Set game owner
         //games->gamesList[gameID].users.push_back(user);            // Push owner to users in game with empty nickname 
     }
-    else if (!games->gamesList.empty() && (games->gamesList[gameID].gameStatus == "waitingForPlayers" ||
-                                           games->gamesList[gameID].gameStatus == "started")) // Game is waiting for players (lobby) or is started
+    else if (!games->gamesList.empty() && (games->gamesList[gameID].gameStatus == WaitingForPlayers ||
+                                           games->gamesList[gameID].gameStatus == STARTED)) // Game is waiting for players (lobby) or is started
     {
         jsonMessage["status"] = "waiting";
     }
@@ -56,7 +57,7 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
     std::cout << gamePin;
 
     json jsonMessage;
-    jsonMessage["type"] = "reJoinOwner"; // Prepare json type respond
+    jsonMessage["type"] = ReJoinOwner; // Prepare json type respond
 
     if (!games->gamesList.empty() && gameID >= 0 && gameID < static_cast<int>(games->gamesList.size()) && games->gamesList[gameID].gamePin == gamePin)
     {
@@ -70,10 +71,10 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
         //     }
         // }
 
-        if (games->gamesList[gameID].gameStatus == "started") // If game is already on
+        if (games->gamesList[gameID].gameStatus == STARTED) // If game is already on
         {
             json question = questionsToJson(&games->gamesList[gameID]);
-            question["type"] = "questionOwner";
+            question["type"] = QuestionOwner;
             sendComunicate(user, question, userList); // Send current question to owner
         }
         else // Game is in lobby
@@ -84,7 +85,7 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
 
                 // if (players.userID != games->gamesList[gameID].gameOwnerID) // Check is user is no a owner
                 // {
-                    playersJson["type"] = "playerJoin";
+                    playersJson["type"] = PlayerJoin;
                     playersJson["player"] = players.nickname;
 
                     sendComunicate(user, playersJson, userList); // Send user nickname to owner, to let him see nicknames in lobby
@@ -98,7 +99,7 @@ void handleStartWithRejoin(Games *games, json gameData, User user, UserList *use
     }
     else
     {
-        jsonMessage["status"] = "fail"; // Game doesn't exists
+        jsonMessage["status"] = FAIL; // Game doesn't exists
     }
 
     sendComunicate(user, jsonMessage, userList); // Send communicate

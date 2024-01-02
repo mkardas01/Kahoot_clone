@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "../include/data_structurs.hpp"
-
+#include "../include/const_data.hpp"
 #include "../include/handle_connection.hpp"
 
 void handleAccept(UserList *userList, User user) // Handle accepting new connection

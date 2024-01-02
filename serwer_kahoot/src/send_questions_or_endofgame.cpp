@@ -2,6 +2,7 @@
 #include <poll.h>
 
 #include "../include/json.hpp"
+#include "../include/const_data.hpp"
 using json = nlohmann::json;
 
 
@@ -29,7 +30,7 @@ void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList
         }
         else // If game is not still on
         {
-            jsonMessage["type"] = "endOfGame"; 
+            jsonMessage["type"] = EndOfGame; 
             sendComunicate(gameUser, jsonMessage, userList); // Send comunicate about ending of game
         }
     }
@@ -37,13 +38,13 @@ void sendQuestionsOrEndOfGame(Games *games, int gameID, bool endOfGame, UserList
     //Handle owner
     if (!endOfGame) // If game is still on
         {
-            jsonMessage["type"] = "questionOwner";
+            jsonMessage["type"] = QuestionOwner;
             
             sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send it 
         }
         else // If game is not still on
         {
-            jsonMessage["type"] = "endOfGame"; 
+            jsonMessage["type"] = EndOfGame; 
             sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList);// Send comunicate about ending of game
         }
 

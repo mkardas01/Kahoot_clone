@@ -2,7 +2,7 @@
 #include <netinet/in.h>
 
 #include "../include/json.hpp"
-
+#include "../include/const_data.hpp"
 #include "../include/data_structurs.hpp"
 
 using json = nlohmann::json;
@@ -42,7 +42,7 @@ void sendPointsSummary(Games *games, UserList *userList, int gameID) // Send poi
 
     // Create a JSON message for points summary
     json jsonMessage;
-    jsonMessage["type"] = "pointsSummary";
+    jsonMessage["type"] = PointsSummary;
     jsonMessage["users"] = json::array();
 
     // Iterate through sorted users and add them to the message

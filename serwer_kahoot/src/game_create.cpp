@@ -2,6 +2,7 @@
 #include <string>
 #include <poll.h>
 #include "../include/json.hpp"
+#include "../include/const_data.hpp"
 using json = nlohmann::json;
 
 #include "../include/data_structurs.hpp"
@@ -40,8 +41,8 @@ void createGame(Games *games, json gameData, User user, UserList *userList)
     games->gamesList.push_back(newGame);
 
     json jsonMessage;
-    jsonMessage["type"] = "createGame";
-    jsonMessage["status"] = "success";
+    jsonMessage["type"] = CreateGameStatus;
+    jsonMessage["status"] = SUCCESS;
     jsonMessage["gameID"] = newGame.gameID;
     jsonMessage["gamePin"] = newGame.gamePin; // Create json respond 
 

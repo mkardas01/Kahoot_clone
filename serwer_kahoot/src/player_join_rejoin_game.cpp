@@ -5,6 +5,7 @@
 #include <poll.h>
 
 #include "../include/data_structurs.hpp"
+#include "../include/const_data.hpp"
 #include "../include/json.hpp"
 using json = nlohmann::json;
 
@@ -28,7 +29,7 @@ std::string handleAddingUserToGame(Games *games, json gameData, User user, UserL
     if (!games->gamesList.empty() && gameID >= 0 &&
         gameID < static_cast<int>(games->gamesList.size()) &&
         games->gamesList[gameID].gamePin == gamePin &&
-        games->gamesList[gameID].gameStatus == "waitingForPlayers") // Check if game is available 
+        games->gamesList[gameID].gameStatus == WaitingForPlayers) // Check if game is available 
 
     {
 
@@ -38,13 +39,13 @@ std::string handleAddingUserToGame(Games *games, json gameData, User user, UserL
 
         sendPlayerToWaitingList(games, user, gameID, userList); // Send user to lobby (owner see who joined the game)
     }
-    else if (!games->gamesList.empty() && games->gamesList[gameID].gameStatus == "started")
+    else if (!games->gamesList.empty() && games->gamesList[gameID].gameStatus == STARTED)
     {
-        status = "started";
+        status = STARTED;
     }
     else
     {
-        status = "fail";
+        status = FAIL;
     }
 
     return status;

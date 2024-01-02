@@ -2,6 +2,7 @@
 #include <poll.h>
 
 #include "../include/json.hpp"
+#include "../include/const_data.hpp"
 using json = nlohmann::json;
 
 
@@ -26,7 +27,7 @@ void sendUserAnswerToOwner(Games *games, json gameData, User user, int gameID, U
             std::cout << "Found game owner with ID: " << games->gamesList[gameID].gameOwnerID << std::endl;
 
             json jsonMessage;
-            jsonMessage["type"] = "userAnswer";
+            jsonMessage["type"] = UserAnswer;
             jsonMessage["answerIndex"] = gameData["answer"]; // Prepare json message
 
             for (User &userGame : games->gamesList[gameID].users) // Find user in game

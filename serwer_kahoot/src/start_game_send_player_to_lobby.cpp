@@ -2,6 +2,7 @@
 #include <poll.h>
 
 #include "../include/json.hpp"
+#include "../include/const_data.hpp"
 using json = nlohmann::json;
 
 
@@ -28,7 +29,7 @@ void sendPlayerToWaitingList(Games *games, User user, int gameID, UserList *user
             std::cout << "Found game owner with ID: " << game.gameOwnerID << std::endl;
 
             json jsonMessage;
-            jsonMessage["type"] = "playerJoin";
+            jsonMessage["type"] = PlayerJoin;
             jsonMessage["player"] = user.nickname;
 
             sendComunicate(userList->users[games->gamesList[gameID].gameOwnerID], jsonMessage, userList); // Send info about joining user to game owner
@@ -46,13 +47,13 @@ void sendPlayerToWaitingList(Games *games, User user, int gameID, UserList *user
 void startGame(Games *games, json gameData, User user, UserList *userList, std::vector<GameDetails>* startedGamesList) // start game (stop waiting in lobby for players)
 {
     json jsonMessage;
-    jsonMessage["type"] = "startGame"; // Prepare json message 
+    jsonMessage["type"] = StartGameStatus; // Prepare json message 
 
     int gameID = gameData["gameID"].get<int>();
 
     jsonMessage["status"] = "started";
 
-    games->gamesList[gameID].gameStatus = "started"; // Change game status
+    games->gamesList[gameID].gameStatus = STARTED; // Change game status
   
     startedGamesList->push_back(games->gamesList[gameID]);
     

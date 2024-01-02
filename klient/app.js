@@ -4,7 +4,7 @@ const net = require('net');
 const path = require('path');
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
-const SERVER_IP = "192.168.1.115";
+const SERVER_IP = "192.168.18.48";
 const PORT_VAR = 41119;
 
 class serverStatus extends EventEmitter {
@@ -64,7 +64,7 @@ wss.on('connection', (ws) => {
 
 
 function connectToCppServer() {
-    server_socket = net.createConnection({ port: PORT_VAR, host: "192.168.1.115" }, () => {
+    server_socket = net.createConnection({ port: PORT_VAR, host: SERVER_IP }, () => {
         console.log('Connected to C++ server');
         serverStatusVar.value = true;
     });

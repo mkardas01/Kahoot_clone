@@ -17,7 +17,7 @@ function putQuestion(data, type = 'game') {
 
 function putUserAnswer(data) {
     let answer = document.getElementById('ownerUserAnswer' + data.answerIndex);
-    answer.innerHTML += ' ' + data.nickname;
+    answer.innerHTML += ' ' + data.nickname + '<br>';
 
 }
 

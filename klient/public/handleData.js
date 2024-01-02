@@ -169,7 +169,7 @@ function handleJoinGame(data) {
 }
 
 function handlePlayerJoin(data) {
-    playersList.innerText = playersList.innerText + ' ' + data['player'];
+    playersList.innerHTML += data['player'] + "<br>";
 }
 
 function handleStartGame() {

@@ -21,7 +21,6 @@ void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameD
     {
         GameDetails &game = games->gamesList[checkGame.gameID];
 
-        std::cout << games->gamesList[game.gameID].usersWhoAnswered << " " << games->gamesList[game.gameID].users.size();
         auto currentTime = std::chrono::steady_clock::now();
         if (games->gamesList[game.gameID].currentQuestion < game.questionsNumber)
         {

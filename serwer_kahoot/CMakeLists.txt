@@ -7,7 +7,8 @@ project(serwer CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 # Dodaj flagę -Wall
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+
 
 # Dodaj pliki źródłowe
 set(SOURCES

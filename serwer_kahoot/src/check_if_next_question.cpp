@@ -25,7 +25,7 @@ void checkIfSendNextQuestion(Games *games, UserList *userList, std::vector<GameD
         if (games->gamesList[game.gameID].currentQuestion < game.questionsNumber)
         {
             if ((currentTime - game.startTime) >= std::chrono::seconds(TIME_TO_RESPOND + 10) 
-                || games->gamesList[game.gameID].usersWhoAnswered == games->gamesList[game.gameID].users.size())
+                || games->gamesList[game.gameID].usersWhoAnswered == static_cast<int>(games->gamesList[game.gameID].users.size()))
             {
                 games->gamesList[game.gameID].usersWhoAnswered = 0;
                 games->gamesList[game.gameID].currentQuestion++;

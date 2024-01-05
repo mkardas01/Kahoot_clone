@@ -1,6 +1,9 @@
 #include <poll.h>
 #include <netinet/in.h>
 #include <iostream>
+#include <vector>
+#include <chrono>
+#include <cstring>
 #include "../include/const_data.hpp"
 #include "../include/data_structurs.hpp"
 
